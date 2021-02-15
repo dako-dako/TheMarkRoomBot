@@ -11,6 +11,7 @@ async def bot_help(message: types.Message):
             "/help - List of available commands",
             "/info - Information about this bot",
             "/feedback - Give your feedback",
-            "/menu - More functions")
+            "/menu - More functions",
+            "/videos - List of available videos")
 
     await message.answer("\n".join(text))
