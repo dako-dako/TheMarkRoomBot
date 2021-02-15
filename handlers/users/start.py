@@ -6,5 +6,5 @@ from loader import dp
 
 @dp.message_handler(CommandStart())
 async def bot_start(message: types.Message):
-    await message.answer(f"Hey and Welcome, 😍{message.from_user.full_name}😍!\n\n"
-                         f"Please type ❗️/info❗️ to move further!")
+    await message.answer(f"Hey and Welcome, <b>{message.from_user.full_name}</b>!\n\n"
+                         f"Please type ❗️/info❗️ to move further!\n\n")

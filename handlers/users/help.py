@@ -9,6 +9,8 @@ async def bot_help(message: types.Message):
     text = ("List of available commands: ",
             "/start - Start conversation",
             "/help - List of available commands",
-            "/info - Information about this bot")
+            "/info - Information about this bot",
+            "/feedback - Give your feedback",
+            "/menu - More functions")
 
     await message.answer("\n".join(text))
