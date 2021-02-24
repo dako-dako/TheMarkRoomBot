@@ -107,8 +107,5 @@ room_choice = InlineKeyboardMarkup(row_width=8,
                                        [
                                            InlineKeyboardButton(text="514", callback_data=choose_callback.new(room_number="514", room="yes"))
                                        ],
-                                       [
-                                           InlineKeyboardButton(text="🔴Exit🔴", callback_data="Exit")
-                                       ]
                                    ])
 

@@ -4,16 +4,16 @@ menu = ReplyKeyboardMarkup(
     row_width=2,
     keyboard = [
         [
-            KeyboardButton(text="🔑Register🔑"),
+            KeyboardButton(text="✌️WhatsApp Group✌️"),
+            KeyboardButton(text="🎞Videos🎞"),
+        ],
+        [
+            KeyboardButton(text="ℹ️FAQℹ️"),
             KeyboardButton(text="📱Contacts📱"),
         ],
         [
-            KeyboardButton(text="🎞Videos🎞"),
-            KeyboardButton(text="ℹ️FAQℹ️"),
-        ],
-        [
             KeyboardButton(text="😊Feedback😊"),
-            KeyboardButton(text="😱Complain😱"),
+            KeyboardButton(text="🛫Arrival Status🛫")
         ],
     ],
     resize_keyboard=True

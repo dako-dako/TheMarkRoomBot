@@ -1,12 +1,11 @@
 from aiogram import types
-from aiogram.dispatcher.filters import Command
 from aiogram.types import ContentType, Message, CallbackQuery
 
 from keyboards.inline.video_choice_buttons import video_choice
 from keyboards.inline.video_callback_datas import video_callback
 
 from loader import dp, bot
-from states import RegistrationProcess
+from states import RegistrationProcess, Feedback
 from aiogram.dispatcher import FSMContext
 from keyboards.default import menu
 
@@ -16,20 +15,28 @@ from keyboards.default import menu
 async def git_file_id(message:Message):
     await message.reply(message.video.file_id)
 
+@dp.message_handler(content_types=ContentType.STICKER)
+async def git_file_id(message:Message):
+    await message.reply(message.sticker.file_id)
+
+@dp.message_handler(content_types=ContentType.PHOTO)
+async def git_file_id(message:Message):
+    await message.reply(message.photo[-1].file_id)
 
 
-@dp.message_handler(text="🎞Videos🎞", state=RegistrationProcess.RegisteredPerson)
+
+@dp.message_handler(text="🎞Videos🎞", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_videos(message: types.Message):
     await message.answer(text="Please choose the video you want to get access to!", reply_markup=video_choice)
 
 
 @dp.message_handler(text="🎞Videos🎞")
-async def choosing_videos(message: types.Message):
+async def not_registered_videos(message: types.Message):
     await message.answer(text="🔑Please register to proceed🔑\n\n", reply_markup=menu)
 
 
 
-@dp.callback_query_handler(video_callback.filter(video_type="Laundry"), state=RegistrationProcess.RegisteredPerson)
+@dp.callback_query_handler(video_callback.filter(video_type="Laundry"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_laundry(call: CallbackQuery):
     await call.answer(cache_time=60)
     video_file_id = "BAACAgIAAxkBAAIB92AqPfToMFBhcmuCFPeAy6KmmJZUAALQCgACkIVRSaAdxqP11QLHHgQ"
@@ -39,7 +46,7 @@ async def choosing_laundry(call: CallbackQuery):
 
 
 
-@dp.callback_query_handler(video_callback.filter(video_type="Trash"), state=RegistrationProcess.RegisteredPerson)
+@dp.callback_query_handler(video_callback.filter(video_type="Trash"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_laundry(call: CallbackQuery):
     await call.answer(cache_time=60)
     video_file_id = "BAACAgIAAxkBAAICDWAqQKL-vrDasyob2jxz-q0VH-sTAALdCgACkIVRSZHyYlCb5aHLHgQ"
@@ -49,7 +56,7 @@ async def choosing_laundry(call: CallbackQuery):
 
 
 
-@dp.callback_query_handler(video_callback.filter(video_type="Linen"), state=RegistrationProcess.RegisteredPerson)
+@dp.callback_query_handler(video_callback.filter(video_type="Linen"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_laundry(call: CallbackQuery):
     await call.answer(cache_time=60)
     video_file_id = "BAACAgIAAxkBAAICD2AqQKr-BH0voAHO6EWL0sd1oPvCAALeCgACkIVRScmjGb42ypg5HgQ"
@@ -59,7 +66,7 @@ async def choosing_laundry(call: CallbackQuery):
 
 
 
-@dp.callback_query_handler(video_callback.filter(video_type="Access"), state=RegistrationProcess.RegisteredPerson)
+@dp.callback_query_handler(video_callback.filter(video_type="Access"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_laundry(call: CallbackQuery):
     await call.answer(cache_time=60)
     video_file_id = "BAACAgIAAxkBAAICC2AqQJd4UoYsumUC6zSJqrczt6o2AALcCgACkIVRSd35OWPVF7EVHgQ"
@@ -69,7 +76,7 @@ async def choosing_laundry(call: CallbackQuery):
 
 
 
-@dp.callback_query_handler(text="Exit", state=RegistrationProcess.RegisteredPerson)
+@dp.callback_query_handler(text="Exit", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_cancel(call: CallbackQuery):
     await call.answer("😥You've canceled the operation😥", show_alert=True)
     await call.message.edit_reply_markup(reply_markup=None)

@@ -1,15 +1,15 @@
 from aiogram import types
 from loader import dp
 from aiogram.dispatcher import FSMContext
-from states import RegistrationProcess
+from states import RegistrationProcess, Feedback
 
-from aiogram.dispatcher.filters import Command
+
 from keyboards.default import menu
 
 
 
-@dp.message_handler(text="ℹ️FAQℹ️", state=RegistrationProcess.RegisteredPerson)
-async def bot_info(message: types.Message):
+@dp.message_handler(text="ℹ️FAQℹ️", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
+async def bot_info(message: types.Message, state:FSMContext):
     text = ("This section is dedicated to <b>Frequently Asked Questions (FAQ)</b>",
             "Below you can find these questions and answers to them as well!\n",
             "<i>How can I connect to WiFi?</i>",
@@ -25,6 +25,5 @@ async def bot_info(message: types.Message):
 
 
 @dp.message_handler(text="ℹ️FAQℹ️")
-async def bot_info(message: types.Message):
-    text = ("🔑Please register to proceed🔑\n\n")
-    await message.answer(text=text, reply_markup=menu)
+async def not_registered_faq(message: types.Message):
+    await message.answer(text="🔑Please register to proceed🔑", reply_markup=menu)

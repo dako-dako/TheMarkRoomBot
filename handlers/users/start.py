@@ -1,12 +1,11 @@
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
-from aiogram.dispatcher.filters import Command
 
 from aiogram.types import CallbackQuery
 
 
-from keyboards.default import menu
+from keyboards.default import menu, register_menu
 from keyboards.inline.room_choice_buttons import room_choice
 from keyboards.inline.arrival_choice_buttons import arrival_choice
 from keyboards.inline.approval_choice_buttons import approval_choice
@@ -16,14 +15,14 @@ from keyboards.inline.approval_callback_datas import approval_callback
 
 
 from loader import dp, bot
+from utils.dp_api import quick_commands as commands
 
-from states import RegistrationProcess
-
-
-from loader import dp
+from states import RegistrationProcess, Feedback
 
 
-@dp.message_handler(CommandStart(), state=RegistrationProcess.RegisteredPerson)
+
+
+@dp.message_handler(CommandStart(), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def bot_start_registered(message: types.Message):
     await message.answer(f"Hello, KK resident - <b>{message.from_user.full_name}</b>!\n\n"
                          f"🔑It seems like you are already registered!🔑\n\n"
@@ -38,9 +37,13 @@ async def bot_start_unregistered(message: types.Message):
                          "🇩🇰🇩🇰If you read this, hopefully right now you are in <b>Copenhagen</b> with which our team would like to congratulate you!🇩🇰🇩🇰\n"
                          "This bot is designed specifically for KK's residents, just to make their life easier while their trip!\n\n"
                          f"🔑Please register to proceed🔑\n\n",
-                         reply_markup=menu)
+                         reply_markup=register_menu)
+    sticker_file_id = "CAACAgIAAxkBAAIJOGAxKfUpa0G0R3O6FlbgeL5e8hUaAAL_AgACbbBCAwSgOas0AjY3HgQ"
+    await bot.send_sticker(chat_id=message.from_user.id,
+                           sticker=sticker_file_id)
 
-@dp.message_handler(text="🔑Register🔑", state=RegistrationProcess.RegisteredPerson)
+
+@dp.message_handler(text="🔑Register🔑", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def double_registration(message: types.Message):
     await message.answer("🙄Hey, you are already registered in our database🙄")
 
@@ -61,14 +64,14 @@ async def approved_resident(message: types.Message, state: FSMContext):
 
         await RegistrationProcess.FirstName.set()
     else:
-        await message.answer(f"{landlord} is not our landlord, please choose \"🔑Register🔑\" and try again!")
+        await message.answer(f"<b><s>{landlord}</s></b> is not our landlord, please choose \"🔑Register🔑\" and try again!")
         await state.reset_state()
 
 
 
 @dp.message_handler(state=RegistrationProcess.FirstName)
 async def residents_first_name(message: types.Message, state: FSMContext):
-    first_name = message.text
+    first_name = message.text.title()
     await state.update_data(first_name=first_name)
     await message.answer("Now please type your ℹ️ <b>LAST NAME</b> ℹ️ in <b>English format</b>\n\n")
 
@@ -77,7 +80,7 @@ async def residents_first_name(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=RegistrationProcess.LastName)
 async def residents_last_name(message: types.Message, state: FSMContext):
-    last_name = message.text
+    last_name = message.text.title()
     await state.update_data(last_name=last_name)
     await message.answer("Now please type your 📧 <b>E-MAIL</b> 📧\n\n")
 
@@ -122,32 +125,41 @@ async def choosing_room(call: CallbackQuery, state: FSMContext, callback_data: d
 
 
 
-@dp.callback_query_handler(text="Exit", state=RegistrationProcess.RoomNumber)
-async def cancel_choosing(call: CallbackQuery, state: FSMContext):
-    await call.answer("😥You haven't chosen your room😥\n\n"
-                      "Please start registration again!", show_alert=True)
-    await call.message.edit_reply_markup(reply_markup=None)
-    await state.reset_state()
-
-
 @dp.callback_query_handler(approval_callback.filter(approval_status="Correct"), state=RegistrationProcess.RoomNumber)
-async def approved_status(call: CallbackQuery, state: FSMContext, callback_data: dict):
-    await call.message.answer(text="⭐️You are successfully registered in TheMark database, we will contact with you soon⭐️", reply_markup=menu)
+async def approved_status(call: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    id = call.from_user.id
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    email = data.get("email")
+    arrival = data.get("arrival")
+    room = data.get("room")
+    photo_file_id = "AgACAgIAAxkBAAIMU2Az1ZFa-0VrjgKu3UclqXKReOTpAAINsTEbsXOgSWsppEj_g0MLxRJ_ny4AAwEAAwIAA3gAA05AAAIeBA"
+    await commands.add_user(id=id, name=first_name, last_name=last_name,
+                            email=email, resident_arrival_status=arrival,
+                            room_number=room)
+
+    await call.message.answer(text="⭐️You are successfully registered in TheMark database, we will contact with you soon⭐\n\n"
+                                   "😎You can use this bot to its full potential now😎",
+                              reply_markup=menu)
+
+    await bot.send_photo(chat_id=call.from_user.id,
+                         photo=photo_file_id,
+                         caption="To switch between commands and normal keyboard, please click on the button as shown here")
+
+    # await bot.send_message(chat_id=1643618473, text="New resident has just registered!\n"
+    #                                                f"Resident's full name: {first_name} {last_name}\n"
+    #                                                f"Resident's email: {email}\n"
+    #                                                f"Arrival Status: {arrival}\n"
+    #                                                f"Resident's room number: {room}")
     await RegistrationProcess.RegisteredPerson.set()
 
 
+
+
+
+
 @dp.callback_query_handler(approval_callback.filter(approval_status="Incorrect"), state=RegistrationProcess.RoomNumber)
-async def approved_status(call: CallbackQuery, state: FSMContext, callback_data: dict):
-    await call.message.answer(text="⚠️ Please register yourself again ⚠️️", reply_markup=menu)
+async def approved_status(call: CallbackQuery, state: FSMContext):
+    await call.message.answer(text="⚠️ Please register again ⚠️️", reply_markup=register_menu)
     await state.reset_state()
-
-
-
-@dp.message_handler(text="📱Contacts📱", state=RegistrationProcess.RegisteredPerson)
-async def get_contacts_registered(message: types.Message, state: FSMContext):
-    await message.answer("+45 26 61 34 13 - <b>Thor</b> (<i>KK's landlord</i>)\n\n"
-                         "<a href='https://themark.dk'>TheMark</a> (Click on it if you wanna visit our website)")
-
-@dp.message_handler(text="📱Contacts📱")
-async def get_contacts_unregistered(message: types.Message):
-    await message.answer(text="🔑Please register to proceed🔑", reply_markup=menu)
