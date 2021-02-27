@@ -1,14 +1,15 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 menu = ReplyKeyboardMarkup(
-    row_width=2,
+    row_width=3,
     keyboard = [
         [
-            KeyboardButton(text="✌️WhatsApp Group✌️"),
+            KeyboardButton(text="ℹ️FAQℹ️"),
             KeyboardButton(text="🎞Videos🎞"),
+            KeyboardButton(text="👮‍Complain👮‍")
         ],
         [
-            KeyboardButton(text="ℹ️FAQℹ️"),
+            KeyboardButton(text="✌️WhatsApp Group✌️"),
             KeyboardButton(text="📱Contacts📱"),
         ],
         [

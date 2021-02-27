@@ -3,6 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 
 from aiogram.types import CallbackQuery
+from data.config import GAVE_FEEDBACK
 
 
 from keyboards.default import menu, register_menu
@@ -115,7 +116,7 @@ async def choosing_room(call: CallbackQuery, state: FSMContext, callback_data: d
     email = data.get("email")
     arrival = data.get("arrival")
     await call.message.answer(f"You've chosen <b>room {room}</b>\n\n")
-    await call.message.answer(f"Is the information correct?\n"
+    await call.message.answer(f"Is the information correct?\n\n"
                               f"Your name: <b>{first_name}</b>\n"
                               f"Your last name: <b>{last_name}</b>\n"
                               f"Your email: <b>{email}</b>\n"
@@ -145,13 +146,15 @@ async def approved_status(call: CallbackQuery, state: FSMContext):
 
     await bot.send_photo(chat_id=call.from_user.id,
                          photo=photo_file_id,
-                         caption="To switch between commands and normal keyboard, please click on the button as shown here")
+                         caption="<b>Tip:</b> <i>To switch between commands and normal keyboard, please click on the button as shown above</i>")
 
     # await bot.send_message(chat_id=1643618473, text="New resident has just registered!\n"
     #                                                f"Resident's full name: {first_name} {last_name}\n"
     #                                                f"Resident's email: {email}\n"
     #                                                f"Arrival Status: {arrival}\n"
     #                                                f"Resident's room number: {room}")
+
+
     await RegistrationProcess.RegisteredPerson.set()
 
 

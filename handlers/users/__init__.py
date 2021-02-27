@@ -7,6 +7,7 @@ from .faq import dp
 from .whatsapp import dp
 from .contacts import dp
 from .approve_arrival import dp
+from .complaint import dp
 from .echo import dp
 
 __all__ = ["dp"]

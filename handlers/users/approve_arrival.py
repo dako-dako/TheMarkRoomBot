@@ -16,7 +16,7 @@ async def yes_or_not(message: types.Message, state: FSMContext):
         await message.answer(text=f"⚠️ <b>Please read this carefully</b> ⚠️\n\n"
                                   f"Right now your arrival status is: <b>\"{current_status}\"</b>\n\n"
                                   f"If you are not in Copenhagen yet, click <i>\"Cancel operation\"</i> and come back to this section when you are in Copenhagen\n\n"
-                                  f"If you need to change your status from <i>\"Not arrived\"</i> to <i>\"Arrived\"</i>, please click the button below\n"
+                                  f"If you need to change your status from <i>\"Not arrived\"</i> to <i>\"Arrived\"</i>, please click the button below\n\n"
                                   f"🔥 <b>But remember, you have only 1 attempt to change arrival status!</b> 🔥",
                              reply_markup=final_choice)
     else:
@@ -32,7 +32,7 @@ async def new_status(call: CallbackQuery, state: FSMContext, callback_data: dict
     arrival = data.get("arrival")
     user_id = call.from_user.id
     await commands.update_resident_arrival_status(id=user_id, resident_arrival_status=arrival)
-    await call.message.answer(text="Your status was successfully changed 😉", reply_markup=menu)
+    await call.message.answer(text="Your status has been successfully changed 😉", reply_markup=menu)
 
 
 @dp.callback_query_handler(text="cancel", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])

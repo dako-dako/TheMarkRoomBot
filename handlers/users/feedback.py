@@ -10,6 +10,7 @@ from states import RegistrationProcess, Feedback
 
 from loader import dp, bot
 from aiogram import types
+from data.config import GAVE_FEEDBACK
 
 
 
@@ -44,7 +45,15 @@ async def ready_choice(call: CallbackQuery, state: FSMContext, callback_data: di
 @dp.message_handler(state=Feedback.GivingFeedback)
 async def answer_feedback(message: types.Message, state: FSMContext):
     feedback = message.text
+    id = message.from_user.id
     await state.update_data(feedback=feedback)
+
+    if id in GAVE_FEEDBACK:
+        pass
+    else:
+        GAVE_FEEDBACK.append(id)
+
+    print(GAVE_FEEDBACK)
     await message.answer(text="🥰 Thank you for your feedback 🥰", reply_markup=menu)
     sticker_file_id = "CAACAgIAAxkBAAIJHmAxKHZmEo2EsIewjsn5PShc_3DKAAIiAwACbbBCA7zHw9-hcLV4HgQ"
     await bot.send_sticker(chat_id=message.from_user.id,

@@ -10,5 +10,6 @@ IP = env.str("ip")  # Тоже str, но для айпи адреса хоста
 PGUSER = env.str("PGUSER")
 PGPASSWORD = env.str("PGPASSWORD")
 DATABASE = env.str("DATABASE")
+GAVE_FEEDBACK = env.list("GAVE_FEEDBACK")
 
 POSTGRES_URI = f"postgresql://{PGUSER}:{PGPASSWORD}@{IP}/{DATABASE}"
