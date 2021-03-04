@@ -3,7 +3,7 @@ from aiogram import types
 from states import RegistrationProcess, Feedback
 from aiogram.types import CallbackQuery
 from keyboards.default import menu
-from loader import dp
+from loader import dp, bot
 from keyboards.inline.final_choice_buttons import final_choice
 from keyboards.inline.final_callback_datas import final_callback
 from utils.dp_api import quick_commands as commands
@@ -22,6 +22,9 @@ async def yes_or_not(message: types.Message, state: FSMContext):
     else:
         await message.answer(text=f"Your current arrival status is: <b>{current_status}</b>\n\n"
                                   f"This section is not meant for you 😉")
+        sticker_file_id = "CAACAgIAAxkBAAISemA6m_sQd681SI9jrPZcjp5r6expAAIfAwACbbBCAyFTdD3Kld8VHgQ"
+        await bot.send_sticker(chat_id=message.from_user.id,
+                               sticker=sticker_file_id)
 
 
 @dp.callback_query_handler(final_callback.filter(arrival_status="Arrived"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])

@@ -40,8 +40,14 @@ async def bot_start_unregistered(message: types.Message):
                          f"🔑Please register to proceed🔑\n\n",
                          reply_markup=register_menu)
     sticker_file_id = "CAACAgIAAxkBAAIJOGAxKfUpa0G0R3O6FlbgeL5e8hUaAAL_AgACbbBCAwSgOas0AjY3HgQ"
+    photo_file_id = "AgACAgIAAxkBAAIUkmA_gWXVM6VRj5waP3IjtF6fbWE0AAKVsDEbEyH4SZaY3l5afINQLjRDni4AAwEAAwIAA3gAA5nAAAIeBA"
     await bot.send_sticker(chat_id=message.from_user.id,
                            sticker=sticker_file_id)
+
+    await bot.send_photo(chat_id=message.from_user.id,
+                         photo=photo_file_id,
+                         caption="<b>Tip:</b> <i>To switch between commands and normal keyboard, please click on the button as shown above</i>")
+
 
 
 @dp.message_handler(text="🔑Register🔑", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
@@ -135,7 +141,7 @@ async def approved_status(call: CallbackQuery, state: FSMContext):
     email = data.get("email")
     arrival = data.get("arrival")
     room = data.get("room")
-    photo_file_id = "AgACAgIAAxkBAAIMU2Az1ZFa-0VrjgKu3UclqXKReOTpAAINsTEbsXOgSWsppEj_g0MLxRJ_ny4AAwEAAwIAA3gAA05AAAIeBA"
+    photo_file_id = "AgACAgIAAxkBAAIUkmA_gWXVM6VRj5waP3IjtF6fbWE0AAKVsDEbEyH4SZaY3l5afINQLjRDni4AAwEAAwIAA3gAA5nAAAIeBA"
     await commands.add_user(id=id, name=first_name, last_name=last_name,
                             email=email, resident_arrival_status=arrival,
                             room_number=room)
@@ -148,11 +154,11 @@ async def approved_status(call: CallbackQuery, state: FSMContext):
                          photo=photo_file_id,
                          caption="<b>Tip:</b> <i>To switch between commands and normal keyboard, please click on the button as shown above</i>")
 
-    # await bot.send_message(chat_id=1643618473, text="New resident has just registered!\n"
-    #                                                f"Resident's full name: {first_name} {last_name}\n"
-    #                                                f"Resident's email: {email}\n"
-    #                                                f"Arrival Status: {arrival}\n"
-    #                                                f"Resident's room number: {room}")
+    await bot.send_message(chat_id=736483526, text="New resident has just registered!\n"
+                                                   f"Resident's full name: {first_name} {last_name}\n"
+                                                   f"Resident's email: {email}\n"
+                                                   f"Arrival Status: {arrival}\n"
+                                                   f"Resident's room number: {room}")
 
 
     await RegistrationProcess.RegisteredPerson.set()

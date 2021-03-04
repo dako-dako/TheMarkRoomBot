@@ -10,6 +10,9 @@ from data.config import GAVE_FEEDBACK
 
 @dp.message_handler(text="👮‍Complain👮‍", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def complain_function(message: types.Message):
+    sticker_file_id = "CAACAgIAAxkBAAISfGA6nATMMqMTtVRY3IaXbvRkp4dlAAIJAwACbbBCA6-5xc2si2vxHgQ"
+    await bot.send_sticker(chat_id=message.from_user.id,
+                           sticker=sticker_file_id)
     await message.answer(text="If you really need to complain, please click <b>\"Complain\"</b> button below\n"
                               "Otherwise click <b>\"Cancel operation\"</b>", reply_markup=complaint_choice)
 

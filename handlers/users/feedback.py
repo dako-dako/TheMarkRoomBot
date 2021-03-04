@@ -47,6 +47,11 @@ async def answer_feedback(message: types.Message, state: FSMContext):
     feedback = message.text
     id = message.from_user.id
     await state.update_data(feedback=feedback)
+    data = await state.get_data()
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    room_number = data.get("room")
+    feedback = data.get("feedback")
 
     if id in GAVE_FEEDBACK:
         pass
@@ -54,6 +59,9 @@ async def answer_feedback(message: types.Message, state: FSMContext):
         GAVE_FEEDBACK.append(id)
 
     print(GAVE_FEEDBACK)
+
+    await bot.send_message(chat_id=736483526,
+                           text=f"You recieved a feedback from <b>{first_name} {last_name}</b> who is living in a <b>room {room_number}</b>\n\n<b>Feedback:</b> {feedback}")
     await message.answer(text="🥰 Thank you for your feedback 🥰", reply_markup=menu)
     sticker_file_id = "CAACAgIAAxkBAAIJHmAxKHZmEo2EsIewjsn5PShc_3DKAAIiAwACbbBCA7zHw9-hcLV4HgQ"
     await bot.send_sticker(chat_id=message.from_user.id,
@@ -63,3 +71,4 @@ async def answer_feedback(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(readiness_callback.filter(readiness_status="Not Ready"), state=RegistrationProcess.RegisteredPerson)
 async def not_ready_choice(call: CallbackQuery, state: FSMContext):
     await call.message.answer("🥺 It's ok, take your time and come back to this section when you feel ready 🥺")
+    await call.message.edit_reply_markup(reply_markup=None)
