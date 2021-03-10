@@ -4,7 +4,6 @@ from aiogram import Dispatcher
 from gino import Gino
 import sqlalchemy as sa
 from sqlalchemy import Column, DateTime
-
 from data import config
 
 db = Gino()

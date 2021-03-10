@@ -3,7 +3,6 @@ from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 
 from aiogram.types import CallbackQuery
-from data.config import GAVE_FEEDBACK
 
 
 from keyboards.default import menu, register_menu
@@ -19,7 +18,6 @@ from loader import dp, bot
 from utils.dp_api import quick_commands as commands
 
 from states import RegistrationProcess, Feedback
-
 
 
 
@@ -159,8 +157,6 @@ async def approved_status(call: CallbackQuery, state: FSMContext):
                                                    f"Resident's email: {email}\n"
                                                    f"Arrival Status: {arrival}\n"
                                                    f"Resident's room number: {room}")
-
-
     await RegistrationProcess.RegisteredPerson.set()
 
 

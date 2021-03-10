@@ -6,7 +6,6 @@ from keyboards.inline.video_callback_datas import video_callback
 
 from loader import dp, bot
 from states import RegistrationProcess, Feedback
-from aiogram.dispatcher import FSMContext
 from keyboards.default import menu
 
 
@@ -59,7 +58,7 @@ async def choosing_laundry(call: CallbackQuery):
 @dp.callback_query_handler(video_callback.filter(video_type="Linen"), state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def choosing_laundry(call: CallbackQuery):
     await call.answer(cache_time=60)
-    video_file_id = "BAACAgIAAxkBAAICD2AqQKr-BH0voAHO6EWL0sd1oPvCAALeCgACkIVRScmjGb42ypg5HgQ"
+    video_file_id = "BAACAgIAAxkBAAIWfWBHv4kQ4fIZqfvoTldJzKvO8SddAAJ2DgAC56tASpTwSDP6HGQqHgQ"
     await bot.send_video(chat_id=call.from_user.id,
                          video=video_file_id,
                          caption="ℹ️Information about <b>Changing Bed Linen</b>ℹ️")

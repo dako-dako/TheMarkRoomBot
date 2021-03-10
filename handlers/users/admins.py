@@ -10,5 +10,3 @@ from data.config import ADMINS
 async def admin_chat_command(message: types.Message):
     await message.answer("This is a secret message especially for Thor\n\n"
                          "To prove him that it's working")
-
-
