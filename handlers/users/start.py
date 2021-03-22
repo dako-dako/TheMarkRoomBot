@@ -18,6 +18,7 @@ from loader import dp, bot
 from utils.dp_api import quick_commands as commands
 
 from states import RegistrationProcess, Feedback
+from data.config import RESIDENTS_ARRIVED, RESIDENTS_NOT_ARRIVED
 
 
 
@@ -152,11 +153,23 @@ async def approved_status(call: CallbackQuery, state: FSMContext):
                          photo=photo_file_id,
                          caption="<b>Tip:</b> <i>To switch between commands and normal keyboard, please click on the button as shown above</i>")
 
-    await bot.send_message(chat_id=736483526, text="New resident has just registered!\n"
-                                                   f"Resident's full name: {first_name} {last_name}\n"
+    await bot.send_message(chat_id=1643618473, text="<b>✨ NEW RESIDENT ✨</b>\n\n"
+                                                   "New resident has just registered!\n"
+                                                   f"Resident's full name: <b>{first_name} {last_name}</b>\n"
                                                    f"Resident's email: {email}\n"
-                                                   f"Arrival Status: {arrival}\n"
-                                                   f"Resident's room number: {room}")
+                                                   f"Arrival Status: <b>{arrival}</b>\n"
+                                                   f"Resident's room number: <b>{room}</b>")
+    if arrival == "Arrived":
+        if id not in RESIDENTS_ARRIVED:
+            RESIDENTS_ARRIVED[id] = [first_name, last_name, email, room]
+        else:
+            pass
+    else:
+        if id not in RESIDENTS_NOT_ARRIVED:
+            RESIDENTS_NOT_ARRIVED[id] = [first_name, last_name, email, room]
+        else:
+            pass
+        
     await RegistrationProcess.RegisteredPerson.set()
 
 

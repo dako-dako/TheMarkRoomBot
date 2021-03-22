@@ -21,7 +21,7 @@ async def complain_function(message: types.Message):
 async def new_status(call: CallbackQuery, state: FSMContext, callback_data: dict):
     await call.message.answer(text="Now please describe your problem in the chat and <b>try to reveal it in as much detail as possible</b>\n\n"
                            "<i>Our landlord will contact you within <b>24 hours</b> to handle your problem</i>\n\n"
-                           "🔥 If there is a serious problem and you have to resolve it immediately, write to our landlord in WhatsApp or call him 🔥\n\n"
+                           "🔥 If there is a serious problem and you have to resolve it immediately, write to our landlord on WhatsApp or call him 🔥\n\n"
                            "<b>Thor's phone number: +45 26 61 34 13</b>")
     await Complain.TypingComplain.set()
 
@@ -35,8 +35,8 @@ async def new_complain(message: types.Message, state: FSMContext):
     first_name = data.get("first_name")
     last_name = data.get("last_name")
     room_number = data.get("room")
-    await bot.send_message(chat_id=736483526, text=f"Resident <b>{first_name} {last_name}</b> who is living in <b>room {room_number}</b> has a complain:\n\n<b>Complain:</b> {complain}")
-    await message.answer("⌛ Your complain has been sent to the landlord successfully, wait for a response soon ⌛")
+    await bot.send_message(chat_id=1643618473, text=f"<b>🤬 COMPLAINT 🤬</b>\n\nResident <b>{first_name} {last_name}</b> who is living in <b>room {room_number}</b> has complained:\n\n<b>Complaint:</b> {complain}")
+    await message.answer("⌛ Your complain has been sent to the landlord successfully, wait for response ⌛")
     if id in GAVE_FEEDBACK:
         await Feedback.GaveFeedback.set()
     else:

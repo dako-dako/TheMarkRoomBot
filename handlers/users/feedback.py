@@ -1,5 +1,4 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Command
 from aiogram.types import CallbackQuery
 
 from keyboards.default import menu
@@ -60,8 +59,8 @@ async def answer_feedback(message: types.Message, state: FSMContext):
 
     print(GAVE_FEEDBACK)
 
-    await bot.send_message(chat_id=736483526,
-                           text=f"You recieved a feedback from <b>{first_name} {last_name}</b> who is living in a <b>room {room_number}</b>\n\n<b>Feedback:</b> {feedback}")
+    await bot.send_message(chat_id=1643618473,
+                           text=f"<b>😁 FINAL FEEDBACK 😁</b>\n\nYou recieved a feedback from <b>{first_name} {last_name}</b>\n\n<b>Feedback:</b> {feedback}")
     await message.answer(text="🥰 Thank you for your feedback 🥰", reply_markup=menu)
     sticker_file_id = "CAACAgIAAxkBAAIJHmAxKHZmEo2EsIewjsn5PShc_3DKAAIiAwACbbBCA7zHw9-hcLV4HgQ"
     await bot.send_sticker(chat_id=message.from_user.id,

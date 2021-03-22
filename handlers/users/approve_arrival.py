@@ -7,6 +7,7 @@ from loader import dp, bot
 from keyboards.inline.final_choice_buttons import final_choice
 from keyboards.inline.final_callback_datas import final_callback
 from utils.dp_api import quick_commands as commands
+from data.config import RESIDENTS_ARRIVED, RESIDENTS_NOT_ARRIVED
 
 @dp.message_handler(text="🛫Arrival Status🛫", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
 async def yes_or_not(message: types.Message, state: FSMContext):
@@ -34,8 +35,22 @@ async def new_status(call: CallbackQuery, state: FSMContext, callback_data: dict
     data = await state.get_data()
     arrival = data.get("arrival")
     user_id = call.from_user.id
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    email = data.get("email")
+    room = data.get("room")
     await commands.update_resident_arrival_status(id=user_id, resident_arrival_status=arrival)
     await call.message.answer(text="Your status has been successfully changed 😉", reply_markup=menu)
+    await bot.send_message(chat_id=1643618473, text=f"🔥 <b>RESIDENT <i>{first_name} {last_name}</i> HAS ARRIVED! 🔥</b>\n\n"
+                                                   f"Resident has changed it's status from <b>\"Not Arrived\"</b> to <b>\"Arrived\"</b>\n"
+                                                   f"Resident's room is <b>{room}</b>\n"
+                                                   f"Resident's email: {email}")
+
+    del RESIDENTS_NOT_ARRIVED[user_id]
+    if user_id not in RESIDENTS_ARRIVED:
+        RESIDENTS_ARRIVED[user_id] = [first_name, last_name, email, room]
+    else:
+        pass
 
 
 @dp.callback_query_handler(text="cancel", state=[RegistrationProcess.RegisteredPerson, Feedback.GaveFeedback])
